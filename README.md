@@ -1,74 +1,40 @@
-## Assignment: Develop a Browser Automation Instruction List Tool
+# Browser Automation Instruction List Tool
 
-## Objective:
-Create a web-based tool that allows users to define, edit, and visualize a series of browser automation instructions. The tool should generate a corresponding JSON output for the instructions and support two-way editing.
+[Live Link](https://browser-automation-instruction-list-tool-hoqradwan.vercel.app/)
 
-![image](https://github.com/user-attachments/assets/3b07b050-3b63-43a7-bfb0-a9e7c00b235b)
+### To Run This Project:
 
-## Requirements:
+1. After cloning the project in your PC from github open it in a code editor and run command **npm install**
+2. Provide the command **npm run dev** in the terminal to run this project
 
-### User Interface:
+## Explanation of technical choices
 
-- a. Create a main panel with input fields for different types of browser instructions.
-- b. Implement a dropdown to select instruction types: Wait, Fill, and Click.
-- c. Add input fields for selectors, text (for Fill instructions), and delay (in milliseconds).
-- d. Include buttons for redo (↻), undo (↺), and adding new instructions (+) at the top of the panel.
-- e. Add a remove button (×) for each instruction.
+- I have chosen Next JS because it provides a simple routing system and really fast in production.
+- TypeScript is used to improve type safety and reduce errors, making development more reliable and maintainable.
+- I opted for raw CSS over Tailwind. Since this is a simple news article app, raw CSS provides all the styling control I need without extra complexity. Tailwind is great for larger projects, but here it felt like overkill, and using plain CSS keeps the bundle smaller and the design flexible. This way, I can quickly adapt styles as needed without being tied to a framework.
 
-### Instruction Types:
+## Assumptions
 
-- a. Wait: Requires a selector input.
-- b. Fill: Requires inputs for selector, text, and delay.
-- c. Click: Requires a selector input.
-- d. Delay: Requests a number input. 
+**API Reliability:** We’re banking on the idea that the external news API is reliable enough to provide data whenever users load the app. If it’s down, users won’t see any articles, but we assume this won’t happen often.
 
-### Layout and Responsiveness:
-- a. Ensure all input fields for an instruction remain on the same line.
-- b. Make the interface responsive for various screen sizes.
-- c. Implement a two-panel layout: instructions on the left, JSON output on the right.
+**Data Structure Consistency:** We’re assuming the data format from the API won’t change. If the API changes its structure, parts of the app might break because we wouldn’t automatically adapt to it.
 
-### JSON Output:
-- a. Create a panel to display the JSON representation of the instructions.
-- b. Update the JSON output in real-time as instructions are added, edited, or removed.
-- c. Format the JSON output to match the structure shown in the image.
+**API Rate Limits:** The app assumes that the API’s rate limits can handle the expected traffic. If we go over the limit, users won’t get new data, but we’re assuming the current limits should be enough.
 
-### Two-way Binding:
-- a. Make the JSON output editable.
-- b. Implement functionality to update the instruction list when the JSON is manually edited.
-- c. Ensure changes in either panel (instruction list or JSON) are reflected in the other.
+**Stable User Connection:** Since the app fetches data from an external source, it assumes users have a good internet connection. No offline mode is planned.
 
-### Functionality:
-- a. Allow users to add new instructions of any type.
-- b. Enable editing of existing instructions.
-- c. Implement undo and redo functionality for all actions.
-- d. Ensure the remove button works for individual instructions.
+**Client-Side Rendering Is Fine:** Since the data is updated dynamically, we’re assuming client-side rendering will work well enough for most users. For SEO, it’s a bit of a trade-off, as articles won’t be pre-rendered.
 
-### Data Validation:
-- a. Implement input validation for all fields.
-- b. Provide user-friendly error messages for invalid inputs or JSON syntax errors.
+## Trade-Offs
 
-### Styling:
-- a. Style the interface to match the layout and design shown in the image.
-- b. Use appropriate spacing and borders to clearly separate instructions.
+**No Backend:** We save on infrastructure costs and keep the setup simple by skipping a backend. However, this means we can’t cache data ourselves, so every request depends entirely on the API’s speed.
 
-### Bonus Features:
-- Implement drag-and-drop functionality to reorder instructions.
-- Add local storage to persist the instruction list between sessions.
-- Create a "Test" button to simulate running the instructions.
-- Implement import/export functionality for instruction sets.
+**Client-Side Fetching:** This setup is straightforward and means we can directly interact with the API, but it does expose our API key to anyone who knows where to look (even with restrictions, this can be a security risk).
+Also, client-side rendering might not be the best for SEO since articles are fetched on load.
 
-### Deliverables:
-- A fully functional web application meeting all the above requirements.
-- Source code with clear comments and documentation.
-- A brief user guide explaining how to use the tool.
-- A short technical document outlining the architecture and key design decisions.
+**Minimal Error Handling:** Keeping things simple means fewer checks on potential errors from the API. If the API has an issue, users might see broken pages, but this approach keeps our code lighter.
 
-### Evaluation Criteria:
-- Functionality: Does the tool work as specified?
-- User Experience: Is the interface intuitive and easy to use?
-- Code Quality: Is the code well-structured, efficient, and maintainable?
-- Design Accuracy: Does the tool's appearance match the provided image?
-- Responsiveness: Does the tool work well on different screen sizes?
-- Two-way Binding: Is the synchronization between the instruction list and JSON output accurate and real-time?
+**Real-Time Data Only:** Fetching articles live each time ensures users see the latest news, but it also means slower load times, especially if the API itself is slow.
 
-This assignment challenges students to create a practical tool for browser automation while applying web development skills, user interface design, state management, and data synchronization concepts.
+**TypeScript:** We chose TypeScript to prevent common errors, which should help during development and avoid runtime errors.
+The downside is that if the API structure changes, we’ll need to update our types, which can be a bit of a hassle.
