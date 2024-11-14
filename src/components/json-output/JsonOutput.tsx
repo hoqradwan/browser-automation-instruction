@@ -1,15 +1,15 @@
+import { Instruction } from '@/types/instruction';
 import React, { useEffect, useState } from 'react';
 
-interface Instruction {
-    [key: string]: any;
-}
 
-interface JsonOutputProps {
+
+interface InstructionManagerProps {
     instructions: Instruction[];
     setInstructions: React.Dispatch<React.SetStateAction<Instruction[]>>;
 }
 
-const JsonOutput: React.FC<JsonOutputProps> = ({ instructions, setInstructions }) => {
+
+const JsonOutput: React.FC<InstructionManagerProps> = ({ instructions, setInstructions }) => {
     const [jsonData, setJsonData] = useState<string>(JSON.stringify(instructions, null, 2));
     const [error, setError] = useState<string | null>(null);
 

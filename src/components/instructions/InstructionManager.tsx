@@ -4,18 +4,15 @@ import AddInstricationModal from './AddInstricationModal';
 import { TiDelete } from 'react-icons/ti';
 import { IoMdAddCircleOutline } from 'react-icons/io';
 import { FaRedo, FaUndo } from 'react-icons/fa';
+import { Instruction } from '@/types/instruction';
 
-interface Instruction {
-    type: 'Wait' | 'Fill' | 'Click' | 'Delay';
-    selector?: string;
-    text?: string;
-    delay?: number;
-}
+
 
 interface InstructionManagerProps {
     instructions: Instruction[];
     setInstructions: React.Dispatch<React.SetStateAction<Instruction[]>>;
 }
+
 
 const InstructionManager: React.FC<InstructionManagerProps> = ({ instructions, setInstructions }) => {
     const [pastStates, setPastStates] = useState<Instruction[][]>([]); // Stack of past states
@@ -25,7 +22,7 @@ const InstructionManager: React.FC<InstructionManagerProps> = ({ instructions, s
     useEffect(() => {
         const savedInstructions = localStorage.getItem('instructions');
         setInstructions(savedInstructions ? JSON.parse(savedInstructions) : []);
-    }, []); // Load from localStorage after mount
+    }, [setInstructions]); // Load from localStorage after mount
 
     useEffect(() => {
         if (instructions !== null) {
@@ -82,6 +79,16 @@ const InstructionManager: React.FC<InstructionManagerProps> = ({ instructions, s
             setInstructions(nextState);
         }
     };
+    const handleClone = (index: number) => {
+
+        saveState(); // Save current state for undo
+        setInstructions((prev) => {
+            const clonedInstruction = { ...prev[index] }; // Clone the selected instruction
+            return [...prev.slice(0, index + 1), clonedInstruction, ...prev.slice(index + 1)];
+        });
+        setFutureStates([]); // Clear redo stack
+
+    }
 
     const renderFields = (instruction: Instruction, index: number) => {
         switch (instruction.type) {
@@ -98,6 +105,7 @@ const InstructionManager: React.FC<InstructionManagerProps> = ({ instructions, s
                                 })
                             }
                         />
+
                     </label>
                 );
             case 'Fill':
@@ -185,14 +193,15 @@ const InstructionManager: React.FC<InstructionManagerProps> = ({ instructions, s
     return (
         <div>
             <h2>Browser Instruction List</h2>
-            <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                 <IoMdAddCircleOutline style={{ cursor: "pointer" }} onClick={() => setIsModalOpen(true)} />
                 <button style={{ cursor: "pointer" }} onClick={handleClearAll}>
                     Clear All
                 </button>
                 <br />
-                <FaUndo onClick={undo} style={{ cursor: "pointer" }} />
-                <FaRedo onClick={redo} style={{ cursor: "pointer" }} />
+                <button onClick={undo} style={{ cursor: "pointer" }}>  <FaUndo /></button>
+                <button onClick={redo} style={{ cursor: "pointer" }}>   <FaRedo /></button>
+                {/* disabled={pastStates.length === 0} */}
                 {isModalOpen && (
                     <AddInstricationModal
                         onClose={() => setIsModalOpen(false)}
@@ -202,7 +211,7 @@ const InstructionManager: React.FC<InstructionManagerProps> = ({ instructions, s
             </div>
             <ul>
                 {instructions.map((instruction, index) => (
-                    <li key={index} style={{ display: "flex", justifyContent: "space-between", marginBottom: '10px' }}>
+                    <li key={index} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                         <label>
                             <select
                                 value={instruction.type}
@@ -225,7 +234,10 @@ const InstructionManager: React.FC<InstructionManagerProps> = ({ instructions, s
                         <br />
                         {renderFields(instruction, index)}
                         <br />
+                        <button onClick={() => handleClone(index)}>Clone</button>
+
                         <TiDelete style={{ cursor: "pointer" }} onClick={() => handleRemoveInstruction(index)} />
+
                     </li>
                 ))}
             </ul>

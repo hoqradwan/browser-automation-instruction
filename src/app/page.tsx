@@ -3,23 +3,23 @@ import { useState } from "react";
 import styles from "./Home.module.css";
 import InstructionManager from "@/components/instructions/InstructionManager";
 import JsonOutput from "@/components/json-output/JsonOutput";
+import { Instruction } from "@/types/instruction";
 
-// Define the structure of an instruction
-interface Instruction {
-  type: string;
-  selector?: string;
-  text?: string;
-  delay?: number;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface InstructionManagerProps {
+  instructions: Instruction[];
+  setInstructions: React.Dispatch<React.SetStateAction<Instruction[]>>;
 }
 
+
 const Home = () => {
-  // Define the type for the instructions state
-  const [instructions, setInstructions] = useState<Instruction[] | null>(null);
+  // Default instructions to an empty array instead of null
+  const [instructions, setInstructions] = useState<Instruction[]>([]);
 
   return (
     <>
       <div className={styles.layout}>
-        {/* Pass the correctly typed props to InstructionManager and JsonOutput */}
+        {/* Now instructions is always an array, so no null check needed */}
         <InstructionManager instructions={instructions} setInstructions={setInstructions} />
         <JsonOutput instructions={instructions} setInstructions={setInstructions} />
       </div>

@@ -8,6 +8,7 @@ interface InputProps {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     className?: string;
     disabled?: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [x: string]: any; // Allows additional props
 }
 
